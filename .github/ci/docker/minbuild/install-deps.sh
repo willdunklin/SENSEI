@@ -6,11 +6,15 @@ source ${SPACK_ROOT}/share/spack/setup-env.sh
 
 # make environment
 spack env create ${SENSEI_ENV}
-cp /sensei/bin/spack.yaml ${SPACK_ROOT}/var/spack/environments/${SENSEI_ENV}
+cp /sensei/tmp/spack.yaml ${SPACK_ROOT}/var/spack/environments/${SENSEI_ENV}
 spack env activate ${SENSEI_ENV}
 
 # buildcache
-spack mirror add sensei ${SENSEI_BUILDCACHE}
+HOST_IP_PORT=$(cat /sensei/tmp/host-ip.txt)
+curl -o /sensei/tmp/buildcache.zip http://${HOST_IP_PORT}/buildcache.zip
+unzip /sensei/tmp/buildcache.zip -d /sensei/
+
+spack mirror add sensei /sensei/buildcache
 spack buildcache update-index sensei
 
 # install
@@ -19,8 +23,12 @@ spack concretize -f
 spack install -v --use-cache --no-check-signature -j ${N_THREADS} --only dependencies
 spack install -v --use-cache --no-check-signature -j ${N_THREADS} sensei
 
+# cleanup
 spack clean -a
-rm -rf /root/.spack
+rm -rf /root/.spack /sensei/tmp /sensei/buildcache
 
-spack -e sensei env loads -m lmod
+# load modules
 spack module lmod refresh -y
+spack env loads -m lmod
+
+spack env deactivate

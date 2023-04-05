@@ -26,5 +26,17 @@ tag=$1-$tag_date
 echo "Building container: senseiinsitu/ci:$tag"
 echo "  Dockerfile: $wdir/Dockerfile"
 
+# setup python server for remote buildcache
+HOST_IP=$(docker network inspect bridge | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['IPAM']['Config'][0]['Gateway'])")
+# HOST_IP=127.0.0.1
+HOST_PORT=12345
+echo "$HOST_IP:$HOST_PORT" > $wdir/host-ip.txt
+python3 -m http.server $HOST_PORT -b $HOST_IP &
+pid=$!
+
 docker build -t senseiinsitu/ci:$tag $wdir |& tee $1-build-log.txt
+
+# kill the python server
+kill $pid
+
 # docker push senseiinsitu/ci:$tag

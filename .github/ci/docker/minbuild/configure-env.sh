@@ -11,7 +11,8 @@ export OMPI_ALLOW_RUN_AS_ROOT=1
 export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 
 module use ${SPACK_ROOT}/share/spack/lmod/linux-fedora35-x86_64/Core
-. ${SPACK_ROOT}/var/spack/environments/${SENSEI_ENV}/loads
-module load openmpi ninja swig
 
+module load openmpi ninja swig
 spack env activate ${SENSEI_ENV}
+
+. ${SPACK_ROOT}/var/spack/environments/${SENSEI_ENV}/loads
