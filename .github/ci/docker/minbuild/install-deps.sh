@@ -10,12 +10,16 @@ cp /sensei/tmp/spack.yaml ${SPACK_ROOT}/var/spack/environments/${SENSEI_ENV}
 spack env activate ${SENSEI_ENV}
 
 # buildcache
-HOST_IP_PORT=$(cat /sensei/tmp/host-ip.txt)
-curl -o /sensei/tmp/buildcache.zip http://${HOST_IP_PORT}/buildcache.zip
-unzip /sensei/tmp/buildcache.zip -d /sensei/
-
-spack mirror add sensei /sensei/buildcache
-spack buildcache update-index sensei
+{
+    HOST_IP_PORT=$(cat /sensei/tmp/buildcache-info.txt | awk '{ print $1 }') && \
+    BUILDCACHE_PATH=$(cat /sensei/tmp/buildcache-info.txt | awk '{ print $2 }') && \
+    curl -o /sensei/tmp/buildcache.zip http://${HOST_IP_PORT}/${BUILDCACHE_PATH} && \
+    unzip /sensei/tmp/buildcache.zip -d /sensei/ && \
+    spack mirror add sensei /sensei/buildcache && \
+    spack buildcache update-index sensei
+} || {
+    echo "WARNING: No buildcache found, skipping."
+}
 
 # install
 N_THREADS=$(grep -c '^processor' /proc/cpuinfo)

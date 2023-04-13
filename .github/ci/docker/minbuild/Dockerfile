@@ -4,8 +4,7 @@ ENV SPACK_PYTHON=/usr/bin/python3
 ENV SPACK_ROOT=/opt/spack
 ENV SENSEI_ENV=sensei
 
-# copy the host bridge ip over
-COPY host-ip.txt /sensei/tmp/
+COPY buildcache-info.txt /sensei/tmp/
 
 # Install Pre-reqs and Spack
 COPY install-prereqs.sh /sensei/tmp/

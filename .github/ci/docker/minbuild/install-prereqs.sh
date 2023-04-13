@@ -19,12 +19,9 @@ fi
 mkdir -p ${SPACK_ROOT}
 cd ${SPACK_ROOT}
 git init
-# git remote add origin https://github.com/spack/spack.git
-# git fetch origin develop
-# git checkout -f develop
-git remote add origin https://github.com/willdunklin/spack.git
-git fetch origin patch-ascent-find-raja
-git checkout -f patch-ascent-find-raja
+git remote add origin https://github.com/spack/spack.git
+git fetch origin develop
+git checkout -f develop
 
 rm -rf .git
 
