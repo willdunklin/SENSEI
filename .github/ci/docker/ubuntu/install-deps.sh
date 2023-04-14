@@ -9,16 +9,16 @@ spack env create ${SENSEI_ENV}
 cp /sensei/tmp/spack.yaml ${SPACK_ROOT}/var/spack/environments/${SENSEI_ENV}
 spack env activate ${SENSEI_ENV}
 
-# buildcache
+# download and install buildcache
 {
-    HOST_IP_PORT=$(cat /sensei/tmp/buildcache-info.txt | awk '{ print $1 }') && \
-    BUILDCACHE_PATH=$(cat /sensei/tmp/buildcache-info.txt | awk '{ print $2 }') && \
-    curl -o /sensei/tmp/buildcache.zip http://${HOST_IP_PORT}/${BUILDCACHE_PATH} && \
-    unzip /sensei/tmp/buildcache.zip -d /sensei/ && \
+    curl -o /sensei/tmp/buildcache.tar.gz https://data.kitware.com/api/v1/item/643867e22f922a9d90bb2a05/download && \
+    tar -xzf /sensei/tmp/buildcache.tar.gz -C /sensei/ && \
+    mv /sensei/buildcache-ubuntu /sensei/buildcache/ && \
     spack mirror add sensei /sensei/buildcache && \
     spack buildcache update-index sensei
 } || {
-    echo "WARNING: No buildcache found, skipping."
+    echo "Error: Failed to install buildcache."
+    exit 1
 }
 
 # install
