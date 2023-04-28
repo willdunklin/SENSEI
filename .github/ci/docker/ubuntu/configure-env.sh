@@ -5,7 +5,7 @@ if [[ -z ${SENSEI_ENV} ]]; then
   exit 1
 fi
 
-export CMAKE_CONFIGURATION=fedora35_ecp_catalyst
+export CMAKE_CONFIGURATION=ubuntu_ecp_catalyst
 export CMAKE_CXX_COMPILER_LAUNCHER=ccache
 export OMPI_ALLOW_RUN_AS_ROOT=1
 export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
