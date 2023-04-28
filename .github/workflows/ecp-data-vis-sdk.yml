@@ -53,6 +53,8 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: ubuntu-gcc-ccache
+    - name: Sanity
+      run: pwd; ls -al; ls -al /sensei; ls -al /sensei/bin; ls -al /sensei/lib
     - name: Configure
       run: ${{ env.LAUNCHER }} ctest -VV -S .github/ci/ctest_configure.cmake
     - name: Build
