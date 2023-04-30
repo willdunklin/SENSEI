@@ -57,28 +57,39 @@ jobs:
       run: |
         pwd
         ls -al
-        ls -al ..
-        ls -al ../..
-        ls -al ../../..
+        # ls -al ..
+        # ls -al ../..
+        # ls -al ../../..
         ls -al /
+        ls -al /root
+        cat /root/.bashrc
         ls -al /sensei/bin
         cd ~
         pwd
         ls -al
         cd -
-        cd /__w/_temp
-        pwd
-        ls -al
-        cat *.sh
-    - name: Spack Sanity
-      run: |
-        . ${SPACK_ROOT}/share/spack/setup-env.sh
-        spack env list
-        ls -al ${SPACK_ROOT}/var/spack/environments/
+        ls -al /bootstrap/runner/install/
+        ls -al /bootstrap/runner/install/linux-ubuntu20.04-x86_64/gcc-11.1.0/lmod-8.7.2-2dgwl2hnw3ztoij4yibuhimturloucbz/lmod/lmod/libexec/
+    # - name: Spack Sanity
+    #   run: |
+    #     . ${SPACK_ROOT}/share/spack/setup-env.sh
+    #     spack env list
+    #     ls -al ${SPACK_ROOT}/var/spack/environments/
     - name: Module Sanity
       run: |
-        . /sensei/bin/configure-env.sh
-        which module
+        . ${SPACK_ROOT}/share/spack/setup-env.sh
+        spack env activate ${SENSEI_ENV}
+        spack env status
+        /bootstrap/runner/install/linux-ubuntu20.04-x86_64/gcc-11.1.0/lmod-8.7.2-2dgwl2hnw3ztoij4yibuhimturloucbz/lmod/lmod/init/bash
+        # export LMOD_CMD=/bootstrap/runner/install/linux-ubuntu20.04-x86_64/gcc-11.1.0/lmod-8.7.2-2dgwl2hnw3ztoij4yibuhimturloucbz/lmod/lmod/libexec/lmod
+        # echo $LMOD_CMD
+        # alias module=$LMOD_CMD
+        module avail
+        spack load sensei@develop
+        echo $?
+        module avail
+        module use ${SPACK_ROOT}/share/spack/lmod/linux-ubuntu20.04-x86_64/Core
+        spack load openmpi ninja swig
         module avail
     - name: Configure
       run: ${{ env.LAUNCHER }} ctest -VV -S .github/ci/ctest_configure.cmake
