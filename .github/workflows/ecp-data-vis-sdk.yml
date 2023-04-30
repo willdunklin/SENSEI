@@ -46,7 +46,7 @@ jobs:
       LAUNCHER: /sensei/bin/launch-env.sh
       CMAKE_CXX_COMPILER_LAUNCHER: ccache
     container:
-      image: ghcr.io/willdunklin/sensei:ubuntu-20230428
+      image: ghcr.io/willdunklin/sensei:ubuntu-20230430
     steps:
     - uses: actions/checkout@v2
     - name: Initialize ccache
