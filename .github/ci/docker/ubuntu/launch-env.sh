@@ -1,4 +1,4 @@
-# . ~/.bashrc
-. /sensei/bin/congfigure-env.sh
+#!/bin/bash
+. /sensei/bin/configure-env.sh
 
 $@
