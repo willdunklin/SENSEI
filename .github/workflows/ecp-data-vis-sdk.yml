@@ -75,8 +75,11 @@ jobs:
         . ${SPACK_ROOT}/share/spack/setup-env.sh
         spack env list
         ls -al ${SPACK_ROOT}/var/spack/environments/
-        spack env activate sensei
-        spack spec
+    - name: Module Sanity
+      run: |
+        . /sensei/bin/configure-env.sh
+        which module
+        module avail
     - name: Configure
       run: ${{ env.LAUNCHER }} ctest -VV -S .github/ci/ctest_configure.cmake
     - name: Build
