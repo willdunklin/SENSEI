@@ -7,35 +7,35 @@ on:
       - develop
 
 jobs:
-  # fedora35-ecp-catalyst:
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     OMPI_ALLOW_RUN_AS_ROOT: 1
-  #     OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
-  #     CMAKE_CONFIGURATION: fedora35_ecp_catalyst
-  #     SENSEI_ENV: sensei
-  #     LAUNCHER: /sensei/bin/launcher
-  #     CMAKE_CXX_COMPILER_LAUNCHER: ccache
-  #   container:
-  #     image: senseiinsitu/ci:fedora35-ecp-catalyst-20220503
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Initialize ccache
-  #     uses: hendrikmuhs/ccache-action@v1.2
-  #     with:
-  #       key: fedora35-gcc-ccache
-  #   - name: Configure
-  #     run: ${{ env.LAUNCHER }} ctest -VV -S .github/ci/ctest_configure.cmake
-  #   - name: Build
-  #     run: ${{ env.LAUNCHER }} ctest -VV -S .github/ci/ctest_build.cmake
-  #   - name: Test
-  #     run: ${{ env.LAUNCHER }} ctest -VV -S .github/ci/ctest_test.cmake
-  #   - name: 'Upload Artifacts'
-  #     uses: actions/upload-artifact@v2
-  #     with:
-  #       name: ${{ env.CMAKE_CONFIGURATION }}_${{ env.GITHUB_JOB_ID }}
-  #       path: /__w/SENSEI/build
-  #       retention-days: 1
+  fedora35-ecp-catalyst:
+    runs-on: ubuntu-latest
+    env:
+      OMPI_ALLOW_RUN_AS_ROOT: 1
+      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+      CMAKE_CONFIGURATION: fedora35_ecp_catalyst
+      SENSEI_ENV: sensei
+      LAUNCHER: /sensei/bin/launcher
+      CMAKE_CXX_COMPILER_LAUNCHER: ccache
+    container:
+      image: senseiinsitu/ci:fedora35-ecp-catalyst-20220503
+    steps:
+    - uses: actions/checkout@v2
+    - name: Initialize ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: fedora35-gcc-ccache
+    - name: Configure
+      run: ${{ env.LAUNCHER }} ctest -VV -S .github/ci/ctest_configure.cmake
+    - name: Build
+      run: ${{ env.LAUNCHER }} ctest -VV -S .github/ci/ctest_build.cmake
+    - name: Test
+      run: ${{ env.LAUNCHER }} ctest -VV -S .github/ci/ctest_test.cmake
+    - name: 'Upload Artifacts'
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.CMAKE_CONFIGURATION }}_${{ env.GITHUB_JOB_ID }}
+        path: /__w/SENSEI/build
+        retention-days: 1
   ubuntu-ecp-catalyst:
     runs-on: ubuntu-latest
     env:
@@ -70,6 +70,7 @@ jobs:
         cd -
         ls -al /bootstrap/runner/install/
         ls -al /bootstrap/runner/install/linux-ubuntu20.04-x86_64/gcc-11.1.0/lmod-8.7.2-2dgwl2hnw3ztoij4yibuhimturloucbz/lmod/lmod/libexec/
+        echo "spack root: ${SPACK_ROOT}"
     # - name: Spack Sanity
     #   run: |
     #     . ${SPACK_ROOT}/share/spack/setup-env.sh
@@ -80,7 +81,9 @@ jobs:
         . ${SPACK_ROOT}/share/spack/setup-env.sh
         spack env activate ${SENSEI_ENV}
         spack env status
-        /bootstrap/runner/install/linux-ubuntu20.04-x86_64/gcc-11.1.0/lmod-8.7.2-2dgwl2hnw3ztoij4yibuhimturloucbz/lmod/lmod/init/bash
+        cat $(spack find --paths lmod | grep '^lmod@' | awk '{ print $2 }')/lmod/lmod/init/bash
+        $(spack find --paths lmod | grep '^lmod@' | awk '{ print $2 }')/lmod/lmod/init/bash
+        echo "lmod root: $LMOD_ROOT"
         # export LMOD_CMD=/bootstrap/runner/install/linux-ubuntu20.04-x86_64/gcc-11.1.0/lmod-8.7.2-2dgwl2hnw3ztoij4yibuhimturloucbz/lmod/lmod/libexec/lmod
         # echo $LMOD_CMD
         # alias module=$LMOD_CMD
