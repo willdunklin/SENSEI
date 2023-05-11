@@ -1,3 +1,4 @@
-. /root/.bashrc
+#!/bin/bash
+. /sensei/bin/configure-env.sh
 
 $@
