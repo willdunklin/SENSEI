@@ -36,64 +36,19 @@ jobs:
         name: ${{ env.CMAKE_CONFIGURATION }}_${{ env.GITHUB_JOB_ID }}
         path: /__w/SENSEI/build
         retention-days: 1
+
   ubuntu-ecp-catalyst:
     runs-on: ubuntu-latest
     env:
-      OMPI_ALLOW_RUN_AS_ROOT: 1
-      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
-      CMAKE_CONFIGURATION: ubuntu_ecp_catalyst
-      SENSEI_ENV: sensei
       LAUNCHER: /sensei/bin/launch-env.sh
-      CMAKE_CXX_COMPILER_LAUNCHER: ccache
     container:
-      image: ghcr.io/willdunklin/sensei:ubuntu-20230430
+      image: ghcr.io/sensei-insitu/ci-ecp@sha256:021fa976435bee980bcb90a0f1b206980c588040d0da4090e479c757f597bb29
     steps:
     - uses: actions/checkout@v2
     - name: Initialize ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: ubuntu-gcc-ccache
-    - name: Sanity
-      run: |
-        pwd
-        ls -al
-        # ls -al ..
-        # ls -al ../..
-        # ls -al ../../..
-        ls -al /
-        ls -al /root
-        cat /root/.bashrc
-        ls -al /sensei/bin
-        cd ~
-        pwd
-        ls -al
-        cd -
-        ls -al /bootstrap/runner/install/
-        ls -al /bootstrap/runner/install/linux-ubuntu20.04-x86_64/gcc-11.1.0/lmod-8.7.2-2dgwl2hnw3ztoij4yibuhimturloucbz/lmod/lmod/libexec/
-        echo "spack root: ${SPACK_ROOT}"
-    # - name: Spack Sanity
-    #   run: |
-    #     . ${SPACK_ROOT}/share/spack/setup-env.sh
-    #     spack env list
-    #     ls -al ${SPACK_ROOT}/var/spack/environments/
-    - name: Module Sanity
-      run: |
-        . ${SPACK_ROOT}/share/spack/setup-env.sh
-        spack env activate ${SENSEI_ENV}
-        spack env status
-        cat $(spack find --paths lmod | grep '^lmod@' | awk '{ print $2 }')/lmod/lmod/init/bash
-        $(spack find --paths lmod | grep '^lmod@' | awk '{ print $2 }')/lmod/lmod/init/bash
-        echo "lmod root: $LMOD_ROOT"
-        # export LMOD_CMD=/bootstrap/runner/install/linux-ubuntu20.04-x86_64/gcc-11.1.0/lmod-8.7.2-2dgwl2hnw3ztoij4yibuhimturloucbz/lmod/lmod/libexec/lmod
-        # echo $LMOD_CMD
-        # alias module=$LMOD_CMD
-        module avail
-        spack load sensei@develop
-        echo $?
-        module avail
-        module use ${SPACK_ROOT}/share/spack/lmod/linux-ubuntu20.04-x86_64/Core
-        spack load openmpi ninja swig
-        module avail
     - name: Configure
       run: ${{ env.LAUNCHER }} ctest -VV -S .github/ci/ctest_configure.cmake
     - name: Build
