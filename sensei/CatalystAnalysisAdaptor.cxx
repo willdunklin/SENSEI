@@ -28,7 +28,12 @@
 #include <vtkMultiProcessController.h>
 #include <vtkCPProcessor.h>
 #include <vtkPointSet.h>
+#if PARAVIEW_VERSION_MAJOR > 5 ||                                       \
+    (PARAVIEW_VERSION_MAJOR == 5 && PARAVIEW_VERSION_MINOR >= 11)
+#include <vtkPVVersion.h>
+#else
 #include <vtkPVConfig.h>
+#endif
 #include <vtkPVXMLElement.h>
 #include <vtkSmartPointer.h>
 #include <vtkSMDoubleVectorProperty.h>
@@ -382,13 +387,14 @@ void CatalystAnalysisAdaptor::AddPythonScriptPipeline(
   const std::string& fileName,
   const std::string& resultProducer,
   const std::string& steerableSourceType,
-  const std::string& resultMesh)
+  const std::string& resultMesh,
+  int versionHint)
 {
 #ifdef ENABLE_CATALYST_PYTHON
 #if PARAVIEW_VERSION_MAJOR > 5 || (PARAVIEW_VERSION_MAJOR == 5 && PARAVIEW_VERSION_MINOR >= 9)
   // detect if we are given a Catalyst 1 or 2 script
   vtkSmartPointer<vtkCPPythonPipeline> pythonPipeline =
-    vtkCPPythonPipeline::CreateAndInitializePipeline(fileName.c_str());
+    vtkCPPythonPipeline::CreateAndInitializePipeline(fileName.c_str(), versionHint);
 
   // if we have a catalyst 1 script, we can create a pipeline with steering options
   if(auto catalyst1Pipeline = vtkCPPythonScriptPipeline::SafeDownCast(pythonPipeline))

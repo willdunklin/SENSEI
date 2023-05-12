@@ -58,6 +58,11 @@ if (ENABLE_ADIOS2)
     list(APPEND senseiCore_libs sHDF5)
   endif()
 
+  if (ENABLE_OSPRAY)
+    list(APPEND senseiCore_sources OSPRayAnalysisAdaptor.cxx)
+    list(APPEND senseiCore_libs sOSPRay)
+  endif()
+
   if (ENABLE_VTK_ACCELERATORS)
     list(APPEND senseiCore_sources VTKmContourAnalysis.cxx)
   endif()
@@ -91,6 +96,14 @@ if (ENABLE_ADIOS2)
   if (ENABLE_CUDA)
     sensei_cuda_target(TARGET senseiCore SOURCES ${senseiCore_cuda_sources})
   endif ()
+
+  if (ENABLE_CATALYST)
+    target_compile_definitions(senseiCore PRIVATE PARAVIEW_VERSION_MAJOR=${ParaView_VERSION_MAJOR} PARAVIEW_VERSION_MINOR=${ParaView_VERSION_MINOR})
+  endif()
+
+  if (ENABLE_VTK_IO)
+    target_compile_definitions(senseiCore PRIVATE VTK_MAJOR_VERSION=${VTK_MAJOR_VERSION} VTK_MINOR_VERSION=${VTK_MINOR_VERSION} VTK_BUILD_VERSION=${VTK_BUILD_VERSION})
+  endif()
 
   target_include_directories(senseiCore PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
