@@ -13,7 +13,7 @@ RUN /sensei/tmp/install-prereqs.sh
 COPY tag.sh /sensei/bin/
 
 # TODO: buildcache logic
-FROM ghcr.io/willdunklin/sensei-buildcache:$BUILDCACHE_VERSION AS buildcache
+FROM ghcr.io/sensei-insitu/sensei-buildcache:$BUILDCACHE_VERSION AS buildcache
 
 # Install SENSEI deps with spack
 FROM init_spack AS build_sensei
